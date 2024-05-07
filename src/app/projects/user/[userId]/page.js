@@ -47,11 +47,11 @@ const Login = () => {
     <h1 className="text-4xl font-bold">My Projects</h1>
     <Link href={"/projects/create-new"} className="mx-5 btn btn-sm btn-primary">Create New Project</Link>
     </div>
-   <div>
+   <div className="grid grid-cols-3">
     {
         projects.map((project,index)=> {
             return (
-                <Card key={index} repo_id={project.repo_id} username={project.username} name={project.repo_name} description={project.description} created_at={project.created_at}/>
+                <Card key={index} repo_id={project.repo_id} username={project.username} name={project.repository_name} description={project.description} created_at={project.created_at}/>
 
             )
 

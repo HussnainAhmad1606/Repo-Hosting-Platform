@@ -3,13 +3,16 @@ import { runQuery } from "@/middlewares/db";
 const  handler = async(req, res) => {
 
 try {
+ let title = req.body.title;
+ let description = req.body.description;
+ let userId = req.body.userId;
  let repoId = req.body.repoId;
 
 
    
-const response = await runQuery(`SELECT * FROM repository_user_view WHERE repo_id=${repoId}
-`, []);
-console.log(response)
+const response = await runQuery(`INSERT INTO issue
+(title, description, repo_id, user_id,status)
+VALUES('${title}', '${description}', '${repoId}', '${userId}', 'Open')`, []);
 
 var type = "";
 if (response.length==0) {

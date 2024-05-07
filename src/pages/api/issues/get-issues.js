@@ -7,7 +7,7 @@ try {
 
 
    
-const response = await runQuery(`SELECT * FROM repository_user_view WHERE repo_id=${repoId}
+const response = await runQuery(`SELECT * FROM issue_user_view WHERE repo_id=${repoId}
 `, []);
 console.log(response)
 
