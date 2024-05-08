@@ -6,19 +6,30 @@ import { useRouter } from "next/navigation";
 import Card from "@/components/Card";
 import Link from "next/link";
 import { format } from "timeago.js";
+import Editor from "@/components/Editor"
+import IssueCard from "@/components/IssueCard";
 
-import IssueCard from "@/components/IssueCard"
+
+import { FaRegStar } from "react-icons/fa6";
+import { FaStar } from "react-icons/fa6";
+import CommitCard from "@/components/CommitCard";
 const Login = ({params}) => {
+
     const {projectId} = params;
   const router = useRouter();
   const [email, SetEmail] = useState("");
   const [password, setPassword] = useState("");
   const [project, setProject] = useState({});
   const [issues, setIssues] = useState([]);
+  const [commits, setCommits] = useState([]);
   const [title, setTitle] = useState("")
   const [description, setDescription] = useState("")
   const [isLoading, setIsLoading] = useState(true);
   const {setIsLogin, setUserId, UserId, setEmail, setUsername} = useUserStore();
+
+  const starRepo = async () => {
+
+  }
   const getProject = async(event) => {
     
     const data = {
@@ -66,6 +77,32 @@ const Login = ({params}) => {
     setIsLoading(false)
     
   };
+
+
+  const getCommits = async(event) => {
+    
+    const data = {
+        repoId: projectId
+    }
+   
+    const req = await fetch("/api/commits/get-commits",{
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    })
+
+    const result = await req.json();
+    console.log(result);
+
+    if (result.type == "success"){
+      setCommits(result.response)
+    }
+
+    setIsLoading(false)
+    
+  };
   const addIssue = async(event) => {
     
     const data = {
@@ -98,14 +135,41 @@ const Login = ({params}) => {
   useEffect(() => {
     getProject();
     getIssues();
+    getCommits();
   }, [])
   
 
   return (
     <div className="flex justify-center items-center flex-col">
-    <h1 className="my-10 text-4xl font-bold">Document Repo Info</h1>
+<div className="w-full flex justify-evenly items-center flex-row">
 
-    <div className="card w-96 bg-base-100 shadow-xl">
+    <h1 className="my-10 text-4xl font-bold">Document Repo Info</h1>
+    <FaRegStar onClick={starRepo} className="text-4xl"/>
+    {/* Open the modal using document.getElementById('ID').showModal() method */}
+<button className="btn" onClick={()=>document.getElementById('my_modal_1').showModal()}>{commits.length} Commits</button>
+<dialog id="my_modal_1" className="modal">
+  <div className="modal-box">
+    <h3 className="font-bold text-lg">Commits on: {project?.repository_name}</h3>
+    {
+      commits.map((commit, index)=> {
+        return (
+          <CommitCard username={commit.username} message={commit.commit_message} created_at={commit.commit_date
+          }/>
+        )
+      })
+    }
+    <div className="modal-action">
+      <form method="dialog">
+        {/* if there is a button in form, it will close the modal */}
+        <button className="btn">Close</button>
+      </form>
+    </div>
+  </div>
+</dialog>
+    {/* <FaStar onClick={starRepo} className="text-4xl"/> */}
+</div>
+
+    <div className="my-10 card w-96 bg-base-100 shadow-xl">
   <div className="card-body">
     <h2 className="card-title">Title: {project?.repository_name}</h2>
     <p>Description: {project?.description}</p>
@@ -113,6 +177,9 @@ const Login = ({params}) => {
    <p>Created at: {format(project?.created_at)}</p>
   </div>
 </div>
+
+
+<Editor text={commits[commits.length-1]}/>
     
 <div className="my-10">
     <div className="flex justify-center items-center">
