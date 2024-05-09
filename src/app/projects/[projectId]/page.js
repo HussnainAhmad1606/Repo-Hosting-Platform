@@ -179,7 +179,7 @@ const Login = ({params}) => {
 </div>
 
 
-<Editor text={commits[commits.length-1]}/>
+<Editor repoId={projectId} userId={UserId} text={commits[commits.length-1]}/>
     
 <div className="my-10">
     <div className="flex justify-center items-center">
